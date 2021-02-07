@@ -45,7 +45,7 @@ Trello kommer att ge en bra bild av vad du har kvar att göra - och hur du
 ligger till tidmässigt. En bra sak är att på kortet också skriva hur mycket
 tid du räknar med att det ska ta. Dels ger det en bild av hur lång tid saker
 tar i förhållande till vad ni först tror (hint- det tar längre tid än man tror!)
-- och dels ger det i alla fall en grov skiss över hur mycket arbete som återstår.
+och dels ger det i alla fall en grov skiss över hur mycket arbete som återstår.
 Kvarvarande kurstid är utöver några (kortare?) föreläsningar och labben,
 två veckor vilket borde motsvarar 70-80 arbetstimmar Vilket borde räcka!
 
