@@ -21,7 +21,11 @@ public class Room {
     }
 
     public void addNpc(Person inputPerson) {
-        personList[getFirstEmptyIndex()] = inputPerson;
+        if (getFirstEmptyIndex() != -1) { // As long as room's not full.
+            personList[getFirstEmptyIndex()] = inputPerson;
+        } else {
+            System.out.println("Room is full!");
+        }
     }
 
     public String getPersons() { // Return each person as a new line

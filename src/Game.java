@@ -49,11 +49,12 @@ public class Game {
         System.out.println("Does Room1 have a shield: " + basementRooms.get(0).getRoomInventory().checkExists(Shield));
         System.out.println("At what index does Room1 have a shield: " + basementRooms.get(0).getRoomInventory().findIndexOf(Shield));
 
-        basementRooms.get(0).getRoomInventory().removeObject(box);
+        //basementRooms.get(0).getRoomInventory().removeObject(box);
 
         //player.getPlayerInventory().moveObject(basementRooms.get(0).getRoomInventory(), Knife);
         npcs.get(1).getNpcInventory().moveObject(player.playerInventory, Shield);
 
+        player.getPlayerInventory().moveObject(basementRooms.get(0).getRoomInventory(), Shield);
 
         // where are npcs???
         /*
@@ -129,9 +130,11 @@ public class Game {
         basementRooms.get(currentPlayerRoom).addObjectToRoom(firstItem);
 
     }
-    public void setTradeObjectName(String tradeObjectName){
+    public void dropItem(String tradeObjectName){
 
+        //GameObject
 
+        //player.getPlayerInventory().moveObject(basementRooms.get(player.currentPlayerRoom).roomInventory, GameObject tradeObjectName);
 
     }
 

@@ -17,18 +17,16 @@ ArrayLists/LinkedLists eller andra (smartare) lösningar!
  */
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class Inventory {
 
     protected GameObject[] objectList;
     protected int invSize;
 
-    public Inventory(int invSize) { //When creating an inventory, get its max size
+    public Inventory(int invSize) {
         this.invSize = invSize;
         this.objectList = new GameObject[invSize];
     }
@@ -42,25 +40,11 @@ public class Inventory {
         this.objectList[findIndexOf(null)] = inputGameObject; //Put inputGameObject into first null value
     }
 
-    // TEST ONLY!
     public boolean checkExists(GameObject inputObject) {
         return Arrays.stream(this.objectList).filter(Objects::nonNull).anyMatch(x -> x.equals(inputObject));
     }
 
-    // TEST ONLY!
-/*
-    public GameObject[] removeObject(GameObject inputObject) {
-
-        objectList = Arrays.stream(this.objectList).filter(Objects::nonNull)
-                .map(x -> !x.equals(inputObject))
-                .toArray(GameObject[]::new)
-                );
-    }
-          */
     public void moveObject(Inventory remoteInventory, GameObject chosenObject) {
-        //check list if its here.  Cant move object if it's not in the list.
-        // if (!isObjecthere(go) { felmeddelande. Han döper dem till i2 och go istället för invHere och inputObject.
-        //this.removeobject(go)
 
         if(findIndexOf(chosenObject) != -1){ //As long as chosenObject exists in inventory
             remoteInventory.addObject(chosenObject); // Add chosenObject to remoteInventory
@@ -69,38 +53,19 @@ public class Inventory {
                 removeObject(chosenObject); // Remove chosenObject from local inventory
             }
         }
-
-
     }
 
-    public void tradeObject(GameObject inputObject) {
-
-        int indexMatch = findIndexOf(inputObject); //find index of item
-
-        //this.objectList = IntStream.range(0, objectList.length)
-         //       .filter(i -> objectList[i] == inputObject);
-
-        //GameObject result = Arrays.stream()
-          //      .filter(Objects::nonNull).map(x -> x.equals(inputObject)).toArray(GameObject[]::new));
-
-    }
-    /*
-    public GameObject dropItem(GameObject chosenItem) {
-        GameObject newItem = chosenItem;
-
-    }
-
-     */
-
-    public GameObject getObject(GameObject getThisObject) {
+    public GameObject getObject(GameObject getThisObject) { // first object of this kind in objectList
 
        return Arrays.stream(this.objectList).filter(x -> x.equals(getThisObject))
                 .findFirst().orElse(null);
     }
 
-    public void removeObject(GameObject getThisObject) {
-        this.objectList =  Arrays.stream(this.objectList)
-                .filter(Objects::nonNull).filter(x -> !x.equals(getThisObject)).toArray(GameObject[]::new);
+    public void removeObject(GameObject removeObject) {
+
+        int firstIndexFound = findIndexOf(removeObject);
+        this.objectList =  IntStream.range(0, this.objectList.length)
+                .filter(i -> i != firstIndexFound).mapToObj(i -> this.objectList[i]).toArray(GameObject[]::new);
     }
 
     public String toString() { //Only show objects that exist, not null values.

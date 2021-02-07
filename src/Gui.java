@@ -9,7 +9,16 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
  */
     public class Gui extends JFrame {
 
+        private final Border defBorder = BorderFactory.createEmptyBorder(0, 10, 0, 10);
+
         private JPanel panel;
+        private JPanel roomPanel;
+        private JPanel invPanel;
+        private JPanel buttonPanel;
+        private JLabel tradeLabel;
+        private JPanel tradePanel;
+        private JPanel tradeButtons;
+
         private JTextArea showRoom;
         private JTextArea showPersons;
         private JTextArea inventory;
@@ -25,7 +34,7 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.game = game;
             this.setTitle("EC JavaAdv - The Game");
             this.setIconImage(new ImageIcon("./ico/icon.png").getImage()); //Application icon
-            this.setSize(900, 750);
+            this.setSize(900, 370);
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             setUpElements();
             setUpPanel();
@@ -47,68 +56,90 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
 
         private void setUpPanel(){
 
-            this.panel.add(showRoom);
-            this.panel.add(showPersons);
-            this.panel.add(inventory);
-            this.panel.add(tradeInput);
+            this.roomPanel.add(showRoom);
+            this.roomPanel.add(showPersons);
+            this.invPanel.add(inventory);
 
-            this.panel.add(buttonBack);
-            this.panel.add(buttonForward);
-            this.panel.add(button3);
-            this.panel.add(button4);
-            this.panel.add(button5);
+            this.buttonPanel.add(buttonBack);
+            this.buttonPanel.add(buttonForward);
 
+            this.tradePanel.add(tradeLabel);
+            this.tradePanel.add(tradeInput);
+            this.tradeButtons.add(button3);
+            this.tradeButtons.add(button4);
+            this.tradeButtons.add(button5);
+
+            //Set order of panels
+            this.panel.add(this.roomPanel);
+            this.panel.add(this.invPanel);
+            this.panel.add(this.buttonPanel);
+            this.panel.add(this.tradePanel);
+            this.panel.add(this.tradeButtons);
         }
         private void setUpElements(){
 
-            this.panel = new JPanel(new GridLayout(7,1, 5, 5));
+            //JPanel settings
+            this.panel = new JPanel(null);
 
+            this.roomPanel = new JPanel(new GridLayout(1,1, 5, 5));
+            this.roomPanel.setBounds(5, 5, 875, 100);
+
+            this.invPanel = new JPanel(new GridLayout(1,1));
+            this.invPanel.setBounds(5, 110, 875, 40);
+
+            this.buttonPanel = new JPanel(new GridLayout(1,2, 5, 5));
+            this.buttonPanel.setBounds(5, 155, 875, 50);
+
+            this.tradePanel = new JPanel(new GridLayout(2,1));
+            this.tradePanel.setBounds(255, 205, 400, 60);
+
+            this.tradeButtons = new JPanel(new GridLayout(1,3, 5, 5));
+            this.tradeButtons.setBounds(5, 275, 875, 50);
+
+            //J-Variables settings
             this.showRoom = new JTextArea("Room: ");
+            this.showRoom.setBorder(defBorder);
+
             this.showPersons = new JTextArea("NPC's in the room: ");
+            this.showPersons.setBorder(defBorder);
             this.inventory = new JTextArea("Player Inventory: ");
-            this.tradeInput = new JTextField("Name of item to Trade/Drop/Pickup: ");
+            this.inventory.setBorder(defBorder);
+            this.tradeLabel = new JLabel("Name of item to Trade/Drop/Pickup: ", SwingConstants.CENTER);
+            this.tradeInput = new JTextField("");
+            this.tradeInput.setBorder(defBorder);
             this.showPersons.setEditable(false);
             this.showRoom.setEditable(false);
             this.inventory.setEditable(false);
 
             // ************************************************************************
             this.buttonForward = new JButton("Enter next room");
-            ActionListener inputListener1 = e -> {
-                game.goForward();
-            };
-            buttonForward.addActionListener(inputListener1);
+            ActionListener inputListenerChangeRoom = event -> {
 
-            // ************************************************************************
+                if(event.getActionCommand().equals("Go back a room")) {
+                    game.goBack();
+                } else {
+                    game.goForward();
+                }
+            };
+            buttonForward.addActionListener(inputListenerChangeRoom);
+
             this.buttonBack = new JButton("Go back a room");
-            ActionListener inputListener2 = e -> {
-                game.goBack();
-            };
-            buttonBack.addActionListener(inputListener2);
-
+            buttonBack.addActionListener(inputListenerChangeRoom);
             // ************************************************************************
 
-            this.button3 = new JButton("Trade TEST");
-            ActionListener inputListener3 = actionEvent -> {
-                game.setTradeObjectName(tradeInput.getText());
-            };
-            button3.addActionListener(inputListener3);
-
-            // ************************************************************************
-
-            this.button4 = new JButton("Test ITEM-FLOOR");
-            ActionListener inputListener4 = f ->  {
-                game.getFirstItemFromFloor();
-            };
-            button4.addActionListener(inputListener4);
-
-            // ************************************************************************
-            this.button5 = new JButton("Drop object (not implemented yet)");
-            ActionListener inputListener5 = g ->  {
+            this.button3 = new JButton("Trade with NPC");
+            ActionListener inputListenerObject = action -> {
 
                 System.out.println("Trade this" + tradeInput.getText());
-                //game.testCheckThis(tradeInput.getText())
+                game.dropItem(tradeInput.getText());
             };
-            button5.addActionListener(inputListener5);
+            button3.addActionListener(inputListenerObject);
+
+            this.button4 = new JButton("Grab from floor");
+            button4.addActionListener(inputListenerObject);
+
+            this.button5 = new JButton("Drop to floor");
+            button5.addActionListener(inputListenerObject);
             // ************************************************************************
 
         }
