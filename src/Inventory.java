@@ -64,8 +64,13 @@ public class Inventory {
     public void removeObject(GameObject removeObject) {
 
         int firstIndexFound = findIndexOf(removeObject);
-        this.objectList =  IntStream.range(0, this.objectList.length)
-                .filter(i -> i != firstIndexFound).mapToObj(i -> this.objectList[i]).toArray(GameObject[]::new);
+
+        this.objectList = IntStream.range(0, this.objectList.length)
+                .peek(i -> {
+                    if(i == firstIndexFound){
+                        this.objectList[i] = null;
+                    }
+                }).mapToObj(i -> this.objectList[i]).toArray(GameObject[]::new);
     }
 
     public String toString() { //Only show objects that exist, not null values.

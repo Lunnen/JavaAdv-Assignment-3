@@ -23,32 +23,38 @@ public class Update implements Runnable {
         this.inventory = playerInventory;
     }
 
-    @Override
     public void run() {
 
         while (this.gameIsOn) {
 
             //System.out.println(("Loop is Running")); // ! REMOVE !
+            changeViewedInGui(player.getCurrentPlayerRoom()); // Keeps a record of what to show in the GUI, based on currentPlayerRoom.
 
-            changeViewedInGui(player.getCurrentPlayerRoom());
+            /*
 
             for (int i = 0; i < basementRooms.size(); i++){ // Call NPC to do stuff
                 Random random = new Random();
                 //basementRooms.get(random.nextInt(4)).addNpc(npcs.get(0));
                 int randomNr = random.nextInt(3);
                 boolean randomBool = random.nextBoolean();
-                System.out.println(randomNr);
+
+                System.out.println(randomBool);
 
                 //Jason moving around
-                if(randomBool) {
+                if(randomBool) { // 50-50 if he's going to do something.
                     npcs.get(0).setPosition(randomNr);
+                    System.out.println("moving to: " + randomNr);
                 }
 
                 //int chosenNPC = 0
+
+                // Keep track of NPC 0 - Jason, and update GUI accordingly.
                 if((basementRooms.get(i).findIndexOf(npcs.get(0)) != -1) && (i != npcs.get(0).getPosition())){ //if NPC is in the room, and should NOT be there
                     basementRooms.get(i).changeNPCRoom(basementRooms.get(npcs.get(0).getPosition()), npcs.get(0)); // in this room, move to where he should be.
                     System.out.println("NPC RUNNING");
                 }
+
+
             }
 
         try { //Test for NPC moving around
@@ -56,6 +62,7 @@ public class Update implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        */
     }
 
 }

@@ -31,21 +31,17 @@ public class Room {
 
     public void removeNPC(Person removePerson) {
 
-
         int firstIndexFound = findIndexOf(removePerson);
 
-        System.out.println("match here: " + firstIndexFound);
         this.personList = IntStream.range(0, this.personList.length)
                 .peek(i -> {
                     if(i == firstIndexFound){
                         this.personList[i] = null;
                     }
                 }).mapToObj(i -> this.personList[i]).toArray(Person[]::new);
-
     }
 
     public void changeNPCRoom(Room remoteRoom, Person chosenPerson) {
-        System.out.println("this index found: " + findIndexOf(chosenPerson));
         if(findIndexOf(chosenPerson) != -1){ //As long as chosenPerson does not exist in remoteRoom
             remoteRoom.addNpc(chosenPerson); // Add chosenPerson to remoteRoom
 

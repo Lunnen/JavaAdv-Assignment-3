@@ -127,7 +127,7 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             ActionListener inputListenerObject = action -> {
 
                 System.out.println("Trade this" + tradeInput.getText());
-                game.dropItem(tradeInput.getText());
+                //game.dropItem(tradeInput.getText());
             };
             button3.addActionListener(inputListenerObject);
 
