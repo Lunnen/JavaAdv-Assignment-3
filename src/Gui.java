@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -15,7 +16,6 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
         private JPanel roomPanel;
         private JPanel invPanel;
         private JPanel buttonPanel;
-        private JLabel tradeLabel;
         private JPanel tradePanel;
         private JPanel tradeButtons;
 
@@ -32,9 +32,9 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
 
         public Gui(Game game){
             this.game = game;
-            this.setTitle("EC JavaAdv - The Game");
+            this.setTitle("EC Java Advanced -> The Game");
             this.setIconImage(new ImageIcon("./ico/icon.png").getImage()); //Application icon
-            this.setSize(900, 370);
+            this.setSize(900, 360);
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             setUpElements();
             setUpPanel();
@@ -43,7 +43,7 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.setResizable(false);
         }
 
-        //Här kan man updatera respektive fält eller Add person to room
+        // For changing what's shown in the GUI
         public void setShowRoom(String roomDescription){
             this.showRoom.setText(roomDescription);
          }
@@ -55,7 +55,6 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
         }
 
         private void setUpPanel(){
-
             this.roomPanel.add(showRoom);
             this.roomPanel.add(showPersons);
             this.invPanel.add(inventory);
@@ -63,7 +62,6 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.buttonPanel.add(buttonBack);
             this.buttonPanel.add(buttonForward);
 
-            this.tradePanel.add(tradeLabel);
             this.tradePanel.add(tradeInput);
             this.tradeButtons.add(button3);
             this.tradeButtons.add(button4);
@@ -90,23 +88,21 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.buttonPanel = new JPanel(new GridLayout(1,2, 5, 5));
             this.buttonPanel.setBounds(5, 155, 875, 50);
 
-            this.tradePanel = new JPanel(new GridLayout(2,1));
-            this.tradePanel.setBounds(255, 205, 400, 60);
+            this.tradePanel = new JPanel(new GridLayout(1,1));
+            this.tradePanel.setBounds(255, 210, 400, 50);
 
             this.tradeButtons = new JPanel(new GridLayout(1,3, 5, 5));
-            this.tradeButtons.setBounds(5, 275, 875, 50);
+            this.tradeButtons.setBounds(5, 265, 875, 50);
 
-            //J-Variables settings
+            // Variable Settings
             this.showRoom = new JTextArea("Room: ");
             this.showRoom.setBorder(defBorder);
-
             this.showPersons = new JTextArea("NPC's in the room: ");
             this.showPersons.setBorder(defBorder);
             this.inventory = new JTextArea("Player Inventory: ");
             this.inventory.setBorder(defBorder);
-            this.tradeLabel = new JLabel("Name of item to Trade/Drop/Pickup: ", SwingConstants.CENTER);
             this.tradeInput = new JTextField("");
-            this.tradeInput.setBorder(defBorder);
+            this.tradeInput.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Name of item to Trade/Drop/Pickup:"));
             this.showPersons.setEditable(false);
             this.showRoom.setEditable(false);
             this.inventory.setEditable(false);

@@ -9,17 +9,18 @@ be om att byta mot ett objekt i det egna inventory.
  */
 
 public class Person extends Npc {
-
-    public Person(String personName){
-        super(personName);
-    }
-
-    /* this is handled by Room. No need for it?
     protected int position;
 
     public Person(String personName, int roomStart){
         super(personName);
         this.position = roomStart;
     }
-    */
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 }

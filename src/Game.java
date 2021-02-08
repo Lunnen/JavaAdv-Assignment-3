@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /*
 Game Game kommer att vara motorn"i spelet.
@@ -64,6 +65,19 @@ public class Game {
         System.out.println("Room 4 npc: " + basementRooms.get(3).getPersons());
         */
 
+        Random random = new Random();
+        //basementRooms.get(random.nextInt(4)).addNpc(npcs.get(0));
+        int randomNr = random.nextInt(2);
+        System.out.println(randomNr);
+
+
+
+        //NPC JASON
+        //String npcsNewRoom = basementRooms.get(;
+        //basementRooms.get(2).changeNPCRoom(basementRooms.get(0), npcs.get(0)); //Flyttar från rum3 > npc0 till rum0
+        //basementRooms.get(2).removePerson(npcs.get(0));
+        System.out.println(basementRooms.get(2).getPersons());
+
         //Thread -> Game loop
         Update runThread1 = new Update(gameIsOn, gui, npcs, basementRooms, player, player.getPlayerInventory());
         Thread updateTh = new Thread(runThread1);
@@ -83,22 +97,28 @@ public class Game {
     }
 
     public void createRooms() {
-        basementRooms.add(new Room("First room", "A room with a wet floor in the corner."));
-        basementRooms.add(new Room("Second room", "Lots of dirt on the walls."));
-        basementRooms.add(new Room("Third room", "Has blood stains in the corner. What's happened here?"));
+        basementRooms.add(new Room("First room", "A room with a large, wet patch in the corner."));
+        basementRooms.add(new Room("Second room", "Lots of dirt on the walls. It looks a bit like charcoal..."));
+        basementRooms.add(new Room("Third room", "Lots of blood stains around the room. What's happened here?"));
         basementRooms.add(new Room("Fourth room", "Actually kind of clean. I wonder why ...\nThis seems to be the last room in the basement."));
     }
 
     public void createNPC() {
-        npcs.add(new Person("Jason Voorhees"));
-        npcs.add(new Person("Freddy Krueger"));
-        npcs.add(new Person("Ture Sventon"));
+        npcs.add(new Person("Jason Voorhees", 2));
+        npcs.add(new Person("Freddy Krueger", 1));
+        npcs.add(new Person("Ture Sventon",0));
     }
 
     public void addNpcsToRoom() {
-        basementRooms.get(2).addNpc(npcs.get(0));
-        basementRooms.get(0).addNpc(npcs.get(1));
-        basementRooms.get(0).addNpc(npcs.get(2));
+
+        for (Person npc : npcs) { //Find where NPC should be, and add them to that room.
+            if(basementRooms.get(npc.getPosition()).findIndexOf(npc) == -1) { //if NPC doesn't exist in room, add.
+                basementRooms.get(npc.getPosition()).addNpc(npc);
+            }
+        }
+        //basementRooms.get(2).addNpc(npcs.get(0));
+        //basementRooms.get(0).addNpc(npcs.get(1));
+        //basementRooms.get(0).addNpc(npcs.get(2));
     }
 
     public void createItems(Container box) { // Not needed?
@@ -125,9 +145,9 @@ public class Game {
          */
 
         //Same function with player to floor ->
-        GameObject firstItem = player.getPlayerInventory().getObject(box);
+        //GameObject firstItem = player.getPlayerInventory().getObject(box);
 
-        basementRooms.get(currentPlayerRoom).addObjectToRoom(firstItem);
+        //basementRooms.get(currentPlayerRoom).addObjectToRoom(firstItem);
 
     }
     public void dropItem(String tradeObjectName){

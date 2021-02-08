@@ -4,6 +4,7 @@ som Regelbundet updaterar Guit utifrån vad som händer i spelet
  */
 
 import java.util.List;
+import java.util.Random;
 
 public class Update implements Runnable {
     boolean gameIsOn;
@@ -27,24 +28,37 @@ public class Update implements Runnable {
 
         while (this.gameIsOn) {
 
-            System.out.println(("Loop is Running")); // ! REMOVE !
+            //System.out.println(("Loop is Running")); // ! REMOVE !
 
-            switch (player.getCurrentPlayerRoom()) {
-                case 0 -> changeViewedInGui(0);
-                case 1 -> changeViewedInGui(1);
-                case 2 -> changeViewedInGui(2);
-                case 3 -> changeViewedInGui(3);
-            }
-            try { //Test for NPC moving around
-                //Random random = new Random();
-                //System.out.println(random.nextInt(4));
+            changeViewedInGui(player.getCurrentPlayerRoom());
 
-                Thread.sleep(700);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            for (int i = 0; i < basementRooms.size(); i++){ // Call NPC to do stuff
+                Random random = new Random();
+                //basementRooms.get(random.nextInt(4)).addNpc(npcs.get(0));
+                int randomNr = random.nextInt(3);
+                boolean randomBool = random.nextBoolean();
+                System.out.println(randomNr);
+
+                //Jason moving around
+                if(randomBool) {
+                    npcs.get(0).setPosition(randomNr);
+                }
+
+                //int chosenNPC = 0
+                if((basementRooms.get(i).findIndexOf(npcs.get(0)) != -1) && (i != npcs.get(0).getPosition())){ //if NPC is in the room, and should NOT be there
+                    basementRooms.get(i).changeNPCRoom(basementRooms.get(npcs.get(0).getPosition()), npcs.get(0)); // in this room, move to where he should be.
+                    System.out.println("NPC RUNNING");
+                }
             }
+
+        try { //Test for NPC moving around
+            Thread.sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
+
+}
 
     /*
     Main contact between GUI and Game. Shows current values.
