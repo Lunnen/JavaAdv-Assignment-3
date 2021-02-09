@@ -125,9 +125,10 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
 
             this.button3 = new JButton("Trade with NPC");
             ActionListener inputListenerObject = action -> {
+                System.out.println("Trade this " + tradeInput.getText());
+                System.out.println(action.getActionCommand());
 
-                System.out.println("Trade this" + tradeInput.getText());
-                //game.dropItem(tradeInput.getText());
+                game.runTrading(action.getActionCommand(), tradeInput.getText()); // Send button pushed & item name to method
             };
             button3.addActionListener(inputListenerObject);
 

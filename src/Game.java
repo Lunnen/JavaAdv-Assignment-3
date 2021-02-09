@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -26,6 +27,9 @@ public class Game {
     List<Container> chests = new ArrayList<>();
     List<GameObject> items = new ArrayList<>();
 
+    GameObject chosenItem; // create a temporary object for comparison. Used by runTrading method.
+    Inventory temp = new Inventory(1); // Create a temporary inventory for comparison. Used for NPC trading.
+
     // All objects in the game
 
 
@@ -46,11 +50,12 @@ public class Game {
         Room room1 = basementRooms.get(0);
         room1.addObjectToRoom(items.get(2));
         room1.addObjectToRoom(items.get(2));
-        room1.addObjectToRoom(items.get(2));
+        room1.addObjectToRoom(items.get(2)); //add shields
         room1.addObjectToRoom(box);
 
-        npcs.get(0).getNpcInventory().addObject(items.get(2)); //Add shield to Freddy
-
+        npcs.get(0).getNpcInventory().addObject(items.get(2)); //Add shield to Jason
+        npcs.get(1).getNpcInventory().addObject(items.get(2)); //Add shield to Freddy
+        npcs.get(2).getNpcInventory().addObject(items.get(2)); //Add shield to Ture
 
         //System.out.println("Does Room1 have a shield: " + basementRooms.get(0).getRoomInventory().checkExists(Shield));
         //System.out.println("At what index does Room1 have a shield: " + basementRooms.get(0).getRoomInventory().findIndexOf(Shield));
@@ -84,6 +89,7 @@ public class Game {
             player.setCurrentPlayerRoom(1 + (player.getCurrentPlayerRoom()));
         }
     }
+
     public void goBack() {
         if (player.getCurrentPlayerRoom() > 0) {
             player.setCurrentPlayerRoom(player.getCurrentPlayerRoom() - 1);
@@ -98,14 +104,14 @@ public class Game {
     }
 
     public void createNPC() {
-        npcs.add(new Person("Jason Voorhees", 2));
+        npcs.add(new Person("Jason Voorhees", 1)); //2
         npcs.add(new Person("Freddy Krueger", 1));
-        npcs.add(new Person("Ture Sventon",0));
+        npcs.add(new Person("Ture Sventon", 0));
     }
 
     public void addNpcsToRoom() {
         for (Person npc : npcs) { //Find where NPC should be, and add them to that room.
-            if(basementRooms.get(npc.getPosition()).findIndexOf(npc) == -1) { //if NPC doesn't exist in room, add.
+            if (basementRooms.get(npc.getPosition()).findIndexOf(npc) == -1) { //if NPC doesn't exist in room, add.
                 basementRooms.get(npc.getPosition()).addNpc(npc);
             }
         }
@@ -116,22 +122,94 @@ public class Game {
         items.add(new Key("Normal Key", 98, true, box));
         items.add(new GameObject("Shield", 20, true));
         items.add(new GameObject("Knife", 21, true));
-        items.add(new GameObject("Armor plate", 23, true));
+        items.add(new GameObject("Bread", 23, true));
 
     }
-    public void addObjectsToPlayerInv(){
+
+    public void addObjectsToPlayerInv() {
         player.getPlayerInventory().addObject(items.get(2)); //Shield
         player.getPlayerInventory().addObject(items.get(3));
         player.getPlayerInventory().addObject(items.get(4));
     }
-    public void startThreadPool(){
+
+    public void startThreadPool() {
 
         Runnable thread1 = new Update(gameIsOn, gui, npcs, basementRooms, player, player.getPlayerInventory());
         Runnable thread2 = new UpdateNpc(items, gameIsOn, gui, npcs, basementRooms, player, player.getPlayerInventory());
 
-        ScheduledExecutorService tPool = Executors.newScheduledThreadPool(2);
-        tPool.scheduleAtFixedRate(thread1,0,1, TimeUnit.SECONDS); //input 1, run this runnable, initialDelay, period = wait time in between, TimeUnit.
-        tPool.scheduleAtFixedRate(thread2,1, 2, TimeUnit.SECONDS);
+        ScheduledExecutorService tPool = Executors.newScheduledThreadPool(5);
+        tPool.scheduleAtFixedRate(thread1, 0, 700, TimeUnit.MILLISECONDS); //input 1, run this runnable, initialDelay, period = wait time in between, TimeUnit.
+        tPool.scheduleAtFixedRate(thread2, 1, 2, TimeUnit.SECONDS);
+    }
+
+    public void runTrading(String inputButton, String inputObjectName) {
+
+        switch (inputObjectName.toLowerCase()) { //Check if inputObjectName is a valid object name
+            // ******************************************
+            case "victory key":
+                System.out.println("victory key");
+                chosenItem = items.get(0);
+                break;
+            case "normal key":
+                System.out.println("normal key");
+                chosenItem = items.get(1);
+                break;
+            case "shield":
+                System.out.println("Wants to trade a shield!!!");
+                chosenItem = items.get(2);
+                break;
+            case "knife":
+                System.out.println("A knife");
+                chosenItem = items.get(3);
+                break;
+            case "bread":
+                System.out.println("Bread");
+                chosenItem = items.get(4);
+                break;
+            default:
+                System.out.println("WRONG or NO INPUT");
+                break;
+            // ******************************************
+        }
+
+
+        switch (inputButton) {
+            // ******************************************
+            case "Trade with NPC":
+                System.out.println("Gonna trade some shit -> " + inputObjectName);
+
+                System.out.println("this: " + npcs.get(0).getNpcInventory().findIndexOf(null));
+                System.out.println("this: " + npcs.get(0).getNpcInventory());
+
+
+                for (Person npc : npcs) { // Run through all npcs
+                    if (npc.getPosition() == player.currentPlayerRoom) { //If NPC is in player's room
+                        if (npc.getNpcInventory().getFirstObject() != null) { //If NPC has objects in his inventory
+
+                            npc.getNpcInventory().moveObject(temp, npc.getNpcInventory().getFirstObject()); // trade npc item to temp.
+                            player.getPlayerInventory().moveObject(npc.getNpcInventory(), chosenItem); // move chosen item from player to npc inv.
+                            temp.moveObject(player.getPlayerInventory(), temp.getFirstObject()); // move object from temp to player.inv.
+                        }
+                        else {
+                            System.out.println("NPC has no objects");
+                        }
+                    }
+                }
+                break;
+            // ******************************************
+            case "Grab from floor":
+                System.out.println("Gonna grab me some -> " + inputObjectName);
+                basementRooms.get(player.currentPlayerRoom).getRoomInventory().moveObject(player.getPlayerInventory(), chosenItem); // move chosenItem from room.inv to player.inv.
+                break;
+            // ******************************************
+            case "Drop to floor":
+                System.out.println("Dropping stuff... -> " + inputObjectName);
+                player.getPlayerInventory().moveObject(basementRooms.get(player.currentPlayerRoom).getRoomInventory(), chosenItem); // move chosenItem from player.inv to currentRoom.inv.
+
+                break;
+            // ******************************************
+        }
+
     }
 
 }

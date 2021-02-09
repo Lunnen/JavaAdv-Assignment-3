@@ -35,7 +35,7 @@ public class Room {
 
         this.personList = IntStream.range(0, this.personList.length)
                 .peek(i -> {
-                    if(i == firstIndexFound){
+                    if(i == firstIndexFound){ // Where right index was found, make this value null. (If you just remove it, it will decrease the amount of slots in inventory and crash.)
                         this.personList[i] = null;
                     }
                 }).mapToObj(i -> this.personList[i]).toArray(Person[]::new);

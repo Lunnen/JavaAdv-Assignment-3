@@ -15,6 +15,5 @@ public abstract class Npc {
     public Inventory getNpcInventory(){
         return this.npcInventory;
     }
-
     public String toString() { return this.name + " with inventory: " + npcInventory; }
 }

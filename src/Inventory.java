@@ -61,6 +61,12 @@ public class Inventory {
                 .findFirst().orElse(null);
     }
 
+    public GameObject getFirstObject() { // get first object or return null -> Used for NPC trading.
+
+        return Arrays.stream(this.objectList)
+                .filter(Objects::nonNull).findFirst().orElse(null);
+    }
+
     public void removeObject(GameObject removeObject) {
 
         int firstIndexFound = findIndexOf(removeObject);
