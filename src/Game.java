@@ -29,13 +29,10 @@ public class Game {
 
     GameObject chosenItem; // create a temporary object for comparison. Used by runTrading method.
     Inventory temp = new Inventory(1); // Create a temporary inventory for comparison. Used for NPC trading.
-
-    // All objects in the game
-
-
-    Container box = new Container("Blue box", 55, false, false);
-
     boolean gameIsOn = true;
+
+    // All containers
+    Container box = new Container("Blue box", 55, false, false);
 
     public Game() {
         this.gui = new Gui(this);
@@ -57,31 +54,8 @@ public class Game {
         npcs.get(1).getNpcInventory().addObject(items.get(2)); //Add shield to Freddy
         npcs.get(2).getNpcInventory().addObject(items.get(2)); //Add shield to Ture
 
-        //System.out.println("Does Room1 have a shield: " + basementRooms.get(0).getRoomInventory().checkExists(Shield));
-        //System.out.println("At what index does Room1 have a shield: " + basementRooms.get(0).getRoomInventory().findIndexOf(Shield));
 
-        //basementRooms.get(0).getRoomInventory().removeObject(box);
-
-        //player.getPlayerInventory().moveObject(basementRooms.get(0).getRoomInventory(), Knife);
-        //npcs.get(1).getNpcInventory().moveObject(player.playerInventory, Shield);
-
-        //player.getPlayerInventory().moveObject(basementRooms.get(0).getRoomInventory(), Shield);
-
-        /* // where are npcs???
-        System.out.println("Room 1 npc: " + basementRooms.get(0).getPersons());
-        System.out.println("Room 2 npc: " + basementRooms.get(1).getPersons());
-        System.out.println("Room 3 npc: " + basementRooms.get(2).getPersons());
-        System.out.println("Room 4 npc: " + basementRooms.get(3).getPersons());
-        */
-/*
-        //Thread -> Game loop
-        Update runThread1 = new Update(gameIsOn, gui, npcs, basementRooms, player, player.getPlayerInventory());
-        Thread updateTh = new Thread(runThread1);
-        updateTh.start();
-        // *****************************
-
- */
-        startThreadPool(); // Run the threads for Game update to GUI and NPS actions.
+        startThreadPool(); // Run the threads for Game update to GUI and NPC actions.
     }
 
     public void goForward() {
@@ -167,7 +141,7 @@ public class Game {
                 chosenItem = items.get(4);
                 break;
             default:
-                System.out.println("WRONG or NO INPUT");
+                System.out.println("WRONG/NO INPUT");
                 break;
             // ******************************************
         }
@@ -181,7 +155,6 @@ public class Game {
                 System.out.println("this: " + npcs.get(0).getNpcInventory().findIndexOf(null));
                 System.out.println("this: " + npcs.get(0).getNpcInventory());
 
-
                 for (Person npc : npcs) { // Run through all npcs
                     if (npc.getPosition() == player.currentPlayerRoom) { //If NPC is in player's room
                         if (npc.getNpcInventory().getFirstObject() != null) { //If NPC has objects in his inventory
@@ -189,6 +162,7 @@ public class Game {
                             npc.getNpcInventory().moveObject(temp, npc.getNpcInventory().getFirstObject()); // trade npc item to temp.
                             player.getPlayerInventory().moveObject(npc.getNpcInventory(), chosenItem); // move chosen item from player to npc inv.
                             temp.moveObject(player.getPlayerInventory(), temp.getFirstObject()); // move object from temp to player.inv.
+                            break; //End loop - just trade with first NPC.
                         }
                         else {
                             System.out.println("NPC has no objects");
