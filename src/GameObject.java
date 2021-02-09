@@ -19,9 +19,12 @@ public class GameObject {
     public boolean isMovable(){
         return this.canPickUp;
     }
+
     public String getName(){
         return this.objectName;
     }
+
+    public int getId() { return id;}
 
     public String toString() {
         return this.objectName;

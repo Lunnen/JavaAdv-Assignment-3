@@ -1,10 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /*
@@ -43,19 +40,18 @@ public class Game {
         addNpcsToRoom(); // Adding the NPC's to different room start locations.
         addObjectsToPlayerInv(); // Add these objects to player inventory at the start
 
+        /*
+        The game only has a few items.
+        You need to trade with NPC
+        */
+        npcs.get(0).getNpcInventory().addObject(items.get(0)); //Add victory key to Jason
+        npcs.get(1).getNpcInventory().addObject(items.get(3)); //Add knife to Freddy
 
-        Room room1 = basementRooms.get(0);
-        room1.addObjectToRoom(items.get(2));
-        room1.addObjectToRoom(items.get(2));
-        room1.addObjectToRoom(items.get(2)); //add shields
-        room1.addObjectToRoom(box);
-
-        npcs.get(0).getNpcInventory().addObject(items.get(2)); //Add shield to Jason
-        npcs.get(1).getNpcInventory().addObject(items.get(2)); //Add shield to Freddy
-        npcs.get(2).getNpcInventory().addObject(items.get(2)); //Add shield to Ture
-
-
-        startThreadPool(); // Run the threads for Game update to GUI and NPC actions.
+        gui.setConsoleLog("You've woken up inside a basement with several weird men. Try finding a way out of here!");
+        /*
+         Run the threads for Game update to GUI and NPC actions.
+         */
+        startThreadPool();
     }
 
     public void goForward() {
@@ -74,11 +70,11 @@ public class Game {
         basementRooms.add(new Room("First room", "A room with a large, wet patch in the corner."));
         basementRooms.add(new Room("Second room", "Lots of dirt on the walls. It looks a bit like charcoal..."));
         basementRooms.add(new Room("Third room", "Lots of blood stains around the room. What's happened here?"));
-        basementRooms.add(new Room("Fourth room", "Actually kind of clean. I wonder why ...\nThis seems to be the last room in the basement."));
+        basementRooms.add(new Room("Fourth room", "Actually kind of clean. I wonder why ...\nThere's a locked door at the end."));
     }
 
     public void createNPC() {
-        npcs.add(new Person("Jason Voorhees", 1)); //2
+        npcs.add(new Person("Jason Voorhees", 1)); // <-- should be at 2
         npcs.add(new Person("Freddy Krueger", 1));
         npcs.add(new Person("Ture Sventon", 0));
     }
@@ -97,7 +93,6 @@ public class Game {
         items.add(new GameObject("Shield", 20, true));
         items.add(new GameObject("Knife", 21, true));
         items.add(new GameObject("Bread", 23, true));
-
     }
 
     public void addObjectsToPlayerInv() {
@@ -149,7 +144,7 @@ public class Game {
 
         switch (inputButton) {
             // ******************************************
-            case "Trade with NPC":
+            case "Trade with NPC": // ONLY POSSIBLE TO TRADE WITH FIRST NPC IN A ROOM
                 System.out.println("Gonna trade some shit -> " + inputObjectName);
 
                 System.out.println("this: " + npcs.get(0).getNpcInventory().findIndexOf(null));
@@ -163,8 +158,7 @@ public class Game {
                             player.getPlayerInventory().moveObject(npc.getNpcInventory(), chosenItem); // move chosen item from player to npc inv.
                             temp.moveObject(player.getPlayerInventory(), temp.getFirstObject()); // move object from temp to player.inv.
                             break; //End loop - just trade with first NPC.
-                        }
-                        else {
+                        } else {
                             System.out.println("NPC has no objects");
                         }
                     }
@@ -179,6 +173,21 @@ public class Game {
             case "Drop to floor":
                 System.out.println("Dropping stuff... -> " + inputObjectName);
                 player.getPlayerInventory().moveObject(basementRooms.get(player.currentPlayerRoom).getRoomInventory(), chosenItem); // move chosenItem from player.inv to currentRoom.inv.
+
+                break;
+            // ******************************************
+            case "Open door":
+                System.out.println("open with -> " + inputObjectName);
+                if(player.getCurrentPlayerRoom() == 3) {
+                    if (inputObjectName.equalsIgnoreCase("Victory key")) {
+                        gui.setConsoleLog("YOU'VE BEEN SET FREE! VICTORY! GAME END!");
+                    } else {
+                        gui.setConsoleLog("That's not the correct key");
+                    }
+                }
+                else {
+                    gui.setConsoleLog("Your room doesn't have a door");
+                }
 
                 break;
             // ******************************************

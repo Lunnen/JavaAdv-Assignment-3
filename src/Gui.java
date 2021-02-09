@@ -14,7 +14,7 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
 
         private JPanel panel;
         private JPanel roomPanel;
-        private JPanel invPanel;
+        private JPanel invInfoPanel;
         private JPanel buttonPanel;
         private JPanel tradePanel;
         private JPanel tradeButtons;
@@ -22,19 +22,23 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
         private JTextArea showRoom;
         private JTextArea showPersons;
         private JTextArea inventory;
+        private JTextArea infoConsole;
         private JTextField tradeInput;
+
         private JButton buttonForward;
         private JButton buttonBack;
         private JButton button3;
         private JButton button4;
         private JButton button5;
+        private JButton button6;
+
         Game game;
 
         public Gui(Game game){
             this.game = game;
             this.setTitle("EC Java Advanced -> The Game");
             this.setIconImage(new ImageIcon("./ico/icon.png").getImage()); //Application icon
-            this.setSize(900, 360);
+            this.setSize(900, 370);
             this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             setUpElements();
             setUpPanel();
@@ -53,11 +57,14 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
         public void setShowInventory(String inventory){
             this.inventory.setText(inventory);
         }
+        public void setConsoleLog(String consoleLog){ this.infoConsole.setText("Game console: \n" + consoleLog); }
 
         private void setUpPanel(){
             this.roomPanel.add(showRoom);
             this.roomPanel.add(showPersons);
-            this.invPanel.add(inventory);
+
+            this.invInfoPanel.add(inventory);
+            this.invInfoPanel.add(infoConsole);
 
             this.buttonPanel.add(buttonBack);
             this.buttonPanel.add(buttonForward);
@@ -66,10 +73,11 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.tradeButtons.add(button3);
             this.tradeButtons.add(button4);
             this.tradeButtons.add(button5);
+            this.tradeButtons.add(button6);
 
             //Set order of panels
             this.panel.add(this.roomPanel);
-            this.panel.add(this.invPanel);
+            this.panel.add(this.invInfoPanel);
             this.panel.add(this.buttonPanel);
             this.panel.add(this.tradePanel);
             this.panel.add(this.tradeButtons);
@@ -82,30 +90,39 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.roomPanel = new JPanel(new GridLayout(1,1, 5, 5));
             this.roomPanel.setBounds(5, 5, 875, 100);
 
-            this.invPanel = new JPanel(new GridLayout(1,1));
-            this.invPanel.setBounds(5, 110, 875, 40);
+            this.invInfoPanel = new JPanel(new GridLayout(2,1, 5, 5));
+            this.invInfoPanel.setBounds(5, 110, 875, 80);
 
             this.buttonPanel = new JPanel(new GridLayout(1,2, 5, 5));
-            this.buttonPanel.setBounds(5, 155, 875, 50);
+            this.buttonPanel.setBounds(5, 195, 875, 40);
 
             this.tradePanel = new JPanel(new GridLayout(1,1));
-            this.tradePanel.setBounds(255, 210, 400, 50);
+            this.tradePanel.setBounds(255, 240, 400, 40);
 
-            this.tradeButtons = new JPanel(new GridLayout(1,3, 5, 5));
-            this.tradeButtons.setBounds(5, 265, 875, 50);
+            this.tradeButtons = new JPanel(new GridLayout(1,4, 5, 5));
+            this.tradeButtons.setBounds(5, 285, 875, 40);
 
             // Variable Settings
-            this.showRoom = new JTextArea("Room: ");
+            this.showRoom = new JTextArea("");
             this.showRoom.setBorder(defBorder);
-            this.showPersons = new JTextArea("NPC's in the room: ");
+
+            this.showPersons = new JTextArea("");
             this.showPersons.setBorder(defBorder);
-            this.inventory = new JTextArea("Player Inventory: ");
+
+            this.inventory = new JTextArea("");
             this.inventory.setBorder(defBorder);
+
+            this.infoConsole = new JTextArea("");
+            this.infoConsole.setBorder(defBorder);
+            this.infoConsole.setForeground(Color.red); //Important info the player needs to be visible
+
             this.tradeInput = new JTextField("");
-            this.tradeInput.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Name of item to Trade/Drop/Pickup:"));
+            this.tradeInput.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Name of item to Trade/Drop/Pickup/Open door with: "));
+
             this.showPersons.setEditable(false);
             this.showRoom.setEditable(false);
             this.inventory.setEditable(false);
+            this.infoConsole.setEditable(false);
 
             // ************************************************************************
             this.buttonForward = new JButton("Enter next room");
@@ -122,11 +139,8 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
             this.buttonBack = new JButton("Go back a room");
             buttonBack.addActionListener(inputListenerChangeRoom);
             // ************************************************************************
-
             this.button3 = new JButton("Trade with NPC");
             ActionListener inputListenerObject = action -> {
-                System.out.println("Trade this " + tradeInput.getText());
-                System.out.println(action.getActionCommand());
 
                 game.runTrading(action.getActionCommand(), tradeInput.getText()); // Send button pushed & item name to method
             };
@@ -137,6 +151,9 @@ Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
 
             this.button5 = new JButton("Drop to floor");
             button5.addActionListener(inputListenerObject);
+
+            this.button6 = new JButton("Open door");
+            button6.addActionListener(inputListenerObject);
             // ************************************************************************
 
         }
