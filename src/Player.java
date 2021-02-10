@@ -1,9 +1,11 @@
+import java.io.Serializable;
+
 /*
 Player Håller ordning på var spelaren befinner sig (alltså vilket rum
 som ska beskrivas), samt spelarens Inventory.
 
  */
-public class Player {
+public class Player implements Serializable {
 
     protected int currentPlayerRoom;
     protected Inventory playerInventory;

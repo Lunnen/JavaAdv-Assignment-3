@@ -1,10 +1,12 @@
+import java.io.Serializable;
+
 /*
 En subklass till GameObject vars objekt används för att låsa
 upp Containers. Välj om keyobjektet ska hålla koll på vilken instans
 av container den passar till eller tvärtom!
 
  */
-public class Key extends GameObject{
+public class Key extends GameObject {
     Container container;
 
     public Key(String objectName, int id, boolean canPickUp, Container inputContainer) {

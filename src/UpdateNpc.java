@@ -1,13 +1,8 @@
-/*
-Update Ska implementera Runnable och starta en tråd
-som Regelbundet updaterar Guit utifrån vad som händer i spelet
- */
-
 import java.util.List;
 import java.util.Random;
 
 public class UpdateNpc implements Runnable {
-    boolean gameIsOn;
+
     Gui gui;
     List<Person> npcs;
     List<Room> basementRooms;
@@ -15,10 +10,11 @@ public class UpdateNpc implements Runnable {
     Inventory inventory;
     List<GameObject> items;
     Random random = new Random();
+    int chosenNPC;
 
-    public UpdateNpc(List<GameObject> items, boolean gameIsOn, Gui gui, List<Person> npcs, List<Room> basement, Player player, Inventory playerInventory) {
+    public UpdateNpc(int whichNPC, List<GameObject> items, Gui gui, List<Person> npcs, List<Room> basement, Player player, Inventory playerInventory) {
+        this.chosenNPC = whichNPC;
         this.items = items;
-        this.gameIsOn = gameIsOn;
         this.gui = gui;
         this.npcs = npcs;
         this.basementRooms = basement;
@@ -27,42 +23,61 @@ public class UpdateNpc implements Runnable {
     }
 
     public void run() {
-        /*
-        This is where all the NPC AI happens.
-        */
+        /* This is where all the NPC AI happens. */
 
-        //NPC Info
-        int chosenNPC = 2; // 0 - Jason, 1 - Freddy, 2 - Ture
+        //NPC Info Settings
         int currentNpcPosition = (npcs.get(chosenNPC).getPosition());
+        boolean npcHasStuff = npcs.get(chosenNPC).getNpcInventory() != null;
+        boolean floorHasStuff = basementRooms.get(currentNpcPosition).getRoomInventory() != null;
 
-        //NPC actions
         boolean shouldNpcAct = random.nextBoolean();
-
         if (shouldNpcAct) { // 50-50 that he's going to do something.
+            System.out.println("NPC ACT");
 
-            GameObject wantedObject = items.get(2); //Grab shield from floor
+            boolean ifStuffExist = npcHasStuff | floorHasStuff;
+            if (ifStuffExist) { //IF Npc or room has stuff to pickup/drop - run option to random if move or pickup/drop.
 
+                boolean moveOrStuff = random.nextBoolean();
+                if (moveOrStuff) { //Move to other room or pick/drop stuff
 
-            if(basementRooms.get(0).getRoomInventory().findIndexOf(wantedObject) >=0 && //WantedObject exists on the floor
-                    npcs.get(chosenNPC).getNpcInventory().findIndexOf(null) >= 0){ //And there's space in npc inventory
-                basementRooms.get(0).getRoomInventory().moveObject(npcs.get(chosenNPC).getNpcInventory(), wantedObject); //Take object
+                    /* NPC moving to adjoining rooms */
+                    boolean forwardOrBackward = random.nextBoolean();// KEEP THIS, so that both if below are based on the same  value.
+                    if (forwardOrBackward  && currentNpcPosition < 3) { //50-50 if go next room or back a room.
+                        npcs.get(chosenNPC).setPosition(currentNpcPosition + 1);
+                        System.out.println(currentNpcPosition + " > NPC UP");
+
+                    } else if (!forwardOrBackward && (currentNpcPosition > 0)) {
+                        npcs.get(chosenNPC).setPosition(currentNpcPosition - 1);
+                        System.out.println(currentNpcPosition + " > NPC DOWN");
+                    }
+                } else {
+
+                    /* NPC grabbing or dropping objects of/to the floor */
+                    GameObject wantedObject;
+                    boolean grabOrDrop = random.nextBoolean();
+
+                    for (GameObject item : items) { //loop through all items = pick up any type of item
+                        wantedObject = item; //check all items
+
+                        if (floorHasStuff && npcHasStuff) {
+
+                            if (grabOrDrop) { // 50-50 grab or drop
+                                grabFromFloor(wantedObject, currentNpcPosition);
+                            } else {
+                                dropToFloor(wantedObject, currentNpcPosition);
+                            }
+                        }
+                        else if(floorHasStuff){
+                            grabFromFloor(wantedObject, currentNpcPosition);
+                        }
+                        else {
+                            dropToFloor(wantedObject, currentNpcPosition);
+                        }
+                    }
+                }
             }
-
-
-            /*
-            boolean forwardOrBackward = random.nextBoolean();// KEEP THIS, so that both if below are based on the same  value.
-
-            if (forwardOrBackward && (currentNpcPosition >= 0 && currentNpcPosition < 3)) { //50-50 if go next room or back a room.
-                npcs.get(chosenNPC).setPosition(currentNpcPosition + 1);
-                System.out.println(currentNpcPosition + " > NPC UP");
-
-            } else if (!forwardOrBackward && (currentNpcPosition > 0 && currentNpcPosition < 4)) {
-                npcs.get(chosenNPC).setPosition(currentNpcPosition - 1);
-                System.out.println(currentNpcPosition + " > NPC DOWN");
-            }
-
-             */
         }
+
         // Keep track of NPC, and update GUI accordingly.
         for (int i = 0; i < basementRooms.size(); i++) {
 
@@ -71,10 +86,25 @@ public class UpdateNpc implements Runnable {
                 basementRooms.get(i).changeNPCRoom(basementRooms.get(npcs.get(chosenNPC).getPosition()), npcs.get(chosenNPC)); // move NPC to where he should be.
                 System.out.println("NPC > GUI UPDATED");
             }
-
         }
         // **************************************************************************
 
     }
+    public void grabFromFloor(GameObject wantedObject, int currentNpcPosition) {
+        if (basementRooms.get(currentNpcPosition).getRoomInventory().findIndexOf(wantedObject) >= 0 && //WantedObject exists on the floor
+                npcs.get(chosenNPC).getNpcInventory().findIndexOf(null) >= 0) { //And there's space in npc inventory
+            basementRooms.get(currentNpcPosition).getRoomInventory().moveObject(npcs.get(chosenNPC).getNpcInventory(), wantedObject); //Take object
+        }
+        System.out.println("npc nr " + chosenNPC + "Pick looping " + wantedObject);
+    }
+    public void dropToFloor(GameObject wantedObject, int currentNpcPosition){
+        if (npcs.get(chosenNPC).getNpcInventory().findIndexOf(wantedObject) >= 0 && //WantedObject exists in NPC inv.
+                basementRooms.get(currentNpcPosition).getRoomInventory().findIndexOf(null) >= 0) { //And there's space on the floor
+            npcs.get(chosenNPC).getNpcInventory().moveObject(basementRooms.get(currentNpcPosition).getRoomInventory(), wantedObject); //Drop object
+            System.out.println("Npc nr " + chosenNPC + "Drop looping" + wantedObject + "pos" + currentNpcPosition);
+        }
+    }
+
+
 
 }

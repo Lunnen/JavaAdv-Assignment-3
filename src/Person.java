@@ -8,6 +8,7 @@ kan man antingen följa efter och vänta på att objekten läggs ned eller
 be om att byta mot ett objekt i det egna inventory.
  */
 
+
 public class Person extends Npc {
     protected int position;
 

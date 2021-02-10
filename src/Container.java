@@ -3,7 +3,7 @@ En subklass till GameObject som har ett Inventory.
 Kan vara låst eller öppet.
  */
 
-public class Container extends GameObject{
+public class Container extends GameObject {
     Inventory containerInventory;
     boolean locked;
 

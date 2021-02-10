@@ -16,15 +16,17 @@ SKA SKE MED STREAMS - det är alltså INTE tillåtet att använda
 ArrayLists/LinkedLists eller andra (smartare) lösningar!
  */
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Inventory {
+public class Inventory implements Serializable {
 
     protected GameObject[] objectList;
     protected int invSize;
+    protected Gui gui;
 
     public Inventory(int invSize) {
         this.invSize = invSize;
@@ -34,7 +36,7 @@ public class Inventory {
     public void addObject(GameObject inputGameObject) {
 
         if (findIndexOf(null) == -1) { //Find index of first null
-            System.out.println("Inv is full");
+            gui.setConsoleLog("Inventory is full");
             return; //if inventory is full, end method
         }
         this.objectList[findIndexOf(null)] = inputGameObject; //Put inputGameObject into first null value

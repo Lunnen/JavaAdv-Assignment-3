@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -7,11 +8,12 @@ import java.util.stream.IntStream;
 Room Ett Room ska ha ett unikt namn,
 ett Inventory och sen showMetod() som beskriver det för spelaren.
  */
-public class Room {
+public class Room implements Serializable {
     protected String roomName;
     protected String roomDescription;
     protected Inventory roomInventory;
     protected Person[] personList;
+    protected Gui gui;
 
     public Room(String roomName, String roomDescription) {
         this.personList = new Person[5]; //Max 5 in the room
@@ -21,12 +23,11 @@ public class Room {
     }
 
     public void addNpc(Person inputPerson) {
-        if (firstIndexNull() == -1) { //  When room is full.
-            System.out.println("Room is full!");
+        if (findIndexOf(null) == -1) { //  When room is full.
+            gui.setConsoleLog("Room is full of people!");
         } else {
-            personList[firstIndexNull()] = inputPerson; //Add person to first null value
+            personList[findIndexOf(null)] = inputPerson; //Add person to first null value
         }
-        System.out.println("In Room: " + Arrays.toString(personList));
     }
 
     public void removeNPC(Person removePerson) {
@@ -51,9 +52,8 @@ public class Room {
         }
     }
     public Person getPerson(Person getThisPerson) {
-
-        return Arrays.stream(this.personList).filter(x -> x.equals(getThisPerson))
-                .findFirst().orElse(null);
+        return Arrays.stream(this.personList)
+                .filter(x -> x.equals(getThisPerson)).findFirst().orElse(null);
     }
 
     public String getPersons() { // Return each person as a new line
@@ -77,27 +77,20 @@ public class Room {
         return roomDescription;
     }
 
-    public Inventory getRoomInventory() {
-        return roomInventory;
-    }
-
     public void setDescription(String inputDescription) {
         this.roomDescription = inputDescription;
     }
 
+    public Inventory getRoomInventory() {
+        return roomInventory;
+    }
+
     @Override
-    public String toString() { // my Show Method.
+    public String toString() {
         return "You're in the " + roomName + "\n" + roomDescription + "\n\nRoom inventory is:\n" + roomInventory;
     }
 
-    /*
-    Return first index where object/null exist, else -1 (inventory is full)
-    */
-    public int firstIndexNull() { //Finds first index, so no dupes <--
-        return IntStream.range(0, personList.length)
-                .filter(i -> personList[i] == null).findFirst().orElse(-1);
-    }
-
+    //Return first index where object/null exist, else -1 (inventory is full)
     public int findIndexOf(Person personToMatch) { //Finds first index, so no dupes <--
         return IntStream.range(0, personList.length)
                 .filter(i -> personList[i] == personToMatch).findFirst().orElse(-1);

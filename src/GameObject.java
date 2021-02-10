@@ -6,7 +6,9 @@ GameObject ska innehålla en boolean som avgör om objektet
 går att ta med sig eller är fastmonterat"i rummet.
  */
 
-public class GameObject {
+import java.io.Serializable;
+
+public class GameObject implements Serializable {
     protected String objectName;
     protected int id;
     protected boolean canPickUp;
