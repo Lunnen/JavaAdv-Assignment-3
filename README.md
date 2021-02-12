@@ -5,10 +5,10 @@ Focus is to show that you know STREAMS, THREADS, SERIALIZATION and OBJECT MANAGE
 The game itself is NOT the important part.
 
 Function of the game is that you're stuck inside a baseement of fours rooms,
-with three NPC's, were two of them are moving around and picking and dropping stuff.
+with three NPC's, were they move around, pick up and drop stuff.
 You need to get out by finding a key that's hidden somewhere.
 
-Spoiler! 
+-->> Spoiler! <<--
 Don't read this unless you want to know how to finish the game quickly.
 1. Get to the last room, pick up the only items available on room floors at the start(some bread), unless NPC's dropped something that is.
 2. Trade it with Jason's 'Normal key'.
