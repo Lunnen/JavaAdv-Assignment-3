@@ -1,39 +1,21 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-/*
-Game Game kommer att vara motorn"i spelet.
-I konstruktorn kickar vi gång GUI:s och trådar.
-Därefter startas spelloopen som tar in och
-hanterar kommandon ur ett Textfield.
-Updaterar spelet utifrån spelarens instruktioner.
-Notera att Npc kommer att röra sig oavsett vad
-spelaren gör. I Npc-TextArean ska man kunna
-se vilka Npc:er som kommer och går i rummet.
- */
-
-public class Game implements Serializable {
+public class Game {
 
     Gui gui;
     Player player = new Player(0); //Player starts at first room (zero).
-    List<Room> basementRooms = new ArrayList<>();
-    List<Person> npcs = new ArrayList<>();
-    List<GameObject> items = new ArrayList<>();
+    ArrayList<Room> basementRooms = new ArrayList<>();
+    ArrayList<Person> npcs = new ArrayList<>();
+    ArrayList<GameObject> items = new ArrayList<>();
 
-    Save save = new Save(player, basementRooms, npcs);
-
-    boolean gameIsOn = true; // <--- remove?
-
-    private final String fileName = "./mySave.bin";
-
-    // All containers
-    Container box = new Container("The Chest", 55, false, false);
+    protected Save save = new Save(player, basementRooms, npcs, items);
+    protected Container box = new Container("The Chest", 55, false, false);
 
     public Game() {
         this.gui = new Gui(this);
@@ -79,7 +61,7 @@ public class Game implements Serializable {
     }
 
     public void createNPC() {
-        npcs.add(new Person("Jason Voorhees", 1)); // <-- should be at 2
+        npcs.add(new Person("Jason Voorhees", 1));
         npcs.add(new Person("Freddy Krueger", 1));
         npcs.add(new Person("Ture Sventon", 0));
     }
@@ -101,21 +83,23 @@ public class Game implements Serializable {
     }
 
     public void startThreadPool() {
-        ScheduledExecutorService tPool = Executors.newScheduledThreadPool(5);
+        ScheduledExecutorService tPool = Executors.newScheduledThreadPool(6);
 
         Runnable thread1 = new Update(gui, basementRooms, player);
         Runnable thread2 = new UpdateNpc(2, items, gui, npcs, basementRooms, player);
         Runnable thread3 = new UpdateNpc(1, items, gui, npcs, basementRooms, player);
+        Runnable thread4 = new UpdateNpc(0, items, gui, npcs, basementRooms, player);
 
-        tPool.scheduleAtFixedRate(thread1, 0, 700, TimeUnit.MILLISECONDS); //input 1, run this runnable, initialDelay, period = wait time in between, TimeUnit.
+        tPool.scheduleAtFixedRate(thread1, 0, 700, TimeUnit.MILLISECONDS);
         tPool.scheduleAtFixedRate(thread2, 1, 3, TimeUnit.SECONDS); //Ture -> Quicker
         tPool.scheduleAtFixedRate(thread3, 5, 5, TimeUnit.SECONDS); //Freddy -> a bit slower
+        tPool.scheduleAtFixedRate(thread4, 10, 4, TimeUnit.SECONDS); //Jason -> slow starter.
     }
 
-    public void runTrading(String inputButton, String inputObjectName) {
+    public void itemActions(String inputButton, String inputObjectName) {
 
-        GameObject chosenItem = null; // create a temporary object for comparison. Used by runTrading method.
-        Inventory temp = new Inventory(1); // Create a temporary inventory for comparison. Used for NPC trading
+        GameObject chosenItem = null; // create a temporary object for comparison.
+        Inventory temp = new Inventory(1); // Create a temporary inventory for comparison.
 
         switch (inputObjectName.toLowerCase()) {
             case "victory key" -> chosenItem = items.get(0);
@@ -129,15 +113,19 @@ public class Game implements Serializable {
         switch (inputButton) {
             case "Trade with NPC": // <--- ONLY POSSIBLE TO TRADE WITH FIRST NPC IN A ROOM
 
-                for (Person npc : npcs) { // Run through all npcs
-                    if (npc.getPosition() == player.currentPlayerRoom) { //If NPC is in player's room
-                        if (npc.getNpcInventory().getFirstObject() != null && chosenItem != null && player.getPlayerInventory().checkExists(chosenItem)) { //If NPC has objects in his inv. and player has chosen his item & has it in inv.
+                /*
+                Run through all npcs, and If NPC is in player's room.
+                If NPC has objects in his inv. and player has chosen his item & has it in inv.
+                trade npc item to temp and move chosen item from player to npc inv. Then move object from temp to player.inv. */
+                for (Person npc : npcs) {
+                    if (npc.getPosition() == player.currentPlayerRoom) { //
+                        if (npc.getNpcInventory().getFirstObject() != null && chosenItem != null && player.getPlayerInventory().checkExists(chosenItem)) {
 
-                            npc.getNpcInventory().moveObject(temp, npc.getNpcInventory().getFirstObject()); // trade npc item to temp.
-                            player.getPlayerInventory().moveObject(npc.getNpcInventory(), chosenItem); // move chosen item from player to npc inv.
-                            temp.moveObject(player.getPlayerInventory(), temp.getFirstObject()); // move object from temp to player.inv.
+                            npc.getNpcInventory().moveObject(temp, npc.getNpcInventory().getFirstObject());
+                            player.getPlayerInventory().moveObject(npc.getNpcInventory(), chosenItem);
+                            temp.moveObject(player.getPlayerInventory(), temp.getFirstObject());
                             break; //End loop - just trade with first NPC.
-                        } else if(!player.getPlayerInventory().checkExists(chosenItem)){
+                        } else if (!player.getPlayerInventory().checkExists(chosenItem)) {
 
                             gui.setConsoleLog("You don't own that object yet!");
                         } else {
@@ -148,35 +136,39 @@ public class Game implements Serializable {
                 break;
             // ******************************************
             case "Grab from floor":
-                System.out.println("Gonna grab me some -> " + inputObjectName);
-                basementRooms.get(player.currentPlayerRoom).getRoomInventory().moveObject(player.getPlayerInventory(), chosenItem); // move chosenItem from room.inv to player.inv.
+                System.out.println("Gonna grab me some -> " + inputObjectName + chosenItem);
+                System.out.println("player: " + player.getPlayerInventory());
+                System.out.println("roomInv " + basementRooms.get(player.currentPlayerRoom).getRoomInventory());
+
+                basementRooms.get(player.currentPlayerRoom).getRoomInventory().moveObject(player.getPlayerInventory(), chosenItem);
                 break;
             // ******************************************
             case "Drop to floor":
                 System.out.println("Dropping stuff... -> " + inputObjectName);
-                player.getPlayerInventory().moveObject(basementRooms.get(player.currentPlayerRoom).getRoomInventory(), chosenItem); // move chosenItem from player.inv to currentRoom.inv.
+                System.out.println("player: " + player.getPlayerInventory());
+                System.out.println("roomInv " + basementRooms.get(player.currentPlayerRoom).getRoomInventory());
+
+                player.getPlayerInventory().moveObject(basementRooms.get(player.currentPlayerRoom).getRoomInventory(), chosenItem);
 
                 break;
             // ******************************************
             case "Open door/chest":
                 System.out.println("open with -> " + inputObjectName);
 
-                Inventory playerInv = player.getPlayerInventory();
-
                 switch (player.getCurrentPlayerRoom()) {
                     case 0 -> {
 
-                        if (playerInv.checkExists(items.get(1))) {
+                        if (player.getPlayerInventory().checkExists(items.get(1))) { //If it's a normal key
                             Key key = (Key) chosenItem;
                             if (key.keyFits(box)) { // If it's the correct key, open chest.
                                 gui.setConsoleLog("Chest has been opened. Loot transferred to player inventory.");
 
-                                box.getContainerInventory().moveObject(playerInv, items.get(0)); //Move Victory key from chest to player.inv.
-                                playerInv.removeObject(items.get(1)); //Remove key from player.inv.
+                                box.getContainerInventory().moveObject(player.getPlayerInventory(), items.get(0)); //Move Victory key from chest to player.inv.
+                                player.getPlayerInventory().removeObject(items.get(1)); //Remove key from player.inv.
                                 basementRooms.get(player.currentPlayerRoom).getRoomInventory().removeObject(box); //Remove box from room.
 
                             }
-                        } else if(playerInv.checkExists(items.get(0))){
+                        } else if (player.getPlayerInventory().checkExists(items.get(0))) { //If its victory key
                             gui.setConsoleLog("That's not the correct key");
                         } else {
                             gui.setConsoleLog("You don't have a key");
@@ -184,39 +176,32 @@ public class Game implements Serializable {
                     }
                     case 3 -> {
 
-                        if (playerInv.checkExists(items.get(0))) {
+                        if (player.getPlayerInventory().checkExists(items.get(0))) {
                             gui.setConsoleLog("YOU'VE BEEN SET FREE! VICTORY! GAME END!");
 
-                            //tPool.shutdownNow(); // Shutdown all threads
                             new Timer().schedule(new TimerTask() {
                                 public void run() {
                                     System.exit(0);
                                 }
                             }, 10000);
 
-                        } else if(playerInv.checkExists(items.get(1))){
+                        } else if (player.getPlayerInventory().checkExists(items.get(1))) {
                             gui.setConsoleLog("That's not the correct key");
                         } else {
                             gui.setConsoleLog("You don't have a key");
                         }
                     }
-                    default -> {
-                        gui.setConsoleLog("Your room doesn't have a door or chest");
-                    }
-
+                    default -> gui.setConsoleLog("Your room doesn't have a door or chest");
                 }
                 break;
         }
-
-        // ******************************************
     }
 
     public void save() {
 
-
         try {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream("./mySave.bin"));
-            objectOutputStream.writeObject(save); //write 'this' object -> Game
+            objectOutputStream.writeObject(save);
             objectOutputStream.close();
 
             System.out.println("SAVED object");
@@ -234,17 +219,21 @@ public class Game implements Serializable {
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        //Restoring all needed values:
+        //Restoring all needed values from the Save class
         player.setCurrentPlayerRoom(save.getPlayer().getCurrentPlayerRoom());
         player.setPlayerInventory(save.getPlayer().getPlayerInventory());
+        System.out.println("this is set: " + player.getPlayerInventory());
 
-        for(int i = 0; i < basementRooms.size(); i++){
+        for (int i = 0; i < basementRooms.size(); i++) {
             basementRooms.get(i).setRoomInventory(save.getBasementRooms().get(i).getRoomInventory());
             basementRooms.get(i).setPersonList(save.getBasementRooms().get(i).getPersonList());
         }
-        for(int i = 0; i < npcs.size(); i++){
+        for (int i = 0; i < npcs.size(); i++) {
             npcs.get(i).setNpcInventory(save.npcs.get(i).getNpcInventory());
             npcs.get(i).setPosition(save.npcs.get(i).getPosition());
         }
+        this.items = new ArrayList<>();
+        items = save.getItems();
+
     }
 }

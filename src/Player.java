@@ -1,11 +1,10 @@
+import java.io.Serial;
 import java.io.Serializable;
 
-/*
-Player Håller ordning på var spelaren befinner sig (alltså vilket rum
-som ska beskrivas), samt spelarens Inventory.
-
- */
 public class Player implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3913565605589328927L;
 
     protected int currentPlayerRoom;
     protected Inventory playerInventory;

@@ -3,13 +3,8 @@ import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.Serializable;
 
-/*Extremt enkelt Gui för att kunna komma igång.
-Snygga gärna till/gör ett eget.
-Men tänk på att gör GUI:s INTE är ett kursmoment - så fastna inte här!
- */
-public class Gui extends JFrame implements Serializable {
+public class Gui extends JFrame {
 
     private final Border defBorder = BorderFactory.createEmptyBorder(0, 10, 0, 10);
 
@@ -34,8 +29,6 @@ public class Gui extends JFrame implements Serializable {
     private JButton button4;
     private JButton button5;
     private JButton button6;
-
-
     Game game;
 
     public Gui(Game game) {
@@ -126,7 +119,7 @@ public class Gui extends JFrame implements Serializable {
 
         this.infoConsole = new JTextArea("");
         this.infoConsole.setBorder(defBorder);
-        this.infoConsole.setForeground(Color.red); //Important info the player needs to be visible
+        this.infoConsole.setForeground(Color.red);
 
         this.tradeInput = new JTextField("");
         this.tradeInput.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Name of item to interact with: "));
@@ -160,7 +153,8 @@ public class Gui extends JFrame implements Serializable {
         this.button3 = new JButton("Trade with NPC");
         ActionListener inputListenerObject = action -> {
 
-            game.runTrading(action.getActionCommand(), tradeInput.getText()); // Send button pushed & item name to method
+            // Send button pushed & item name to method
+            game.itemActions(action.getActionCommand(), tradeInput.getText());
         };
         button3.addActionListener(inputListenerObject);
 

@@ -1,9 +1,10 @@
-/*
-En subklass till GameObject som har ett Inventory.
-Kan vara låst eller öppet.
- */
+import java.io.Serial;
 
 public class Container extends GameObject {
+
+    @Serial
+    private static final long serialVersionUID = 7045595233639048847L;
+
     Inventory containerInventory;
     boolean locked;
 
@@ -12,11 +13,12 @@ public class Container extends GameObject {
         this.containerInventory = new Inventory(3);
         this.locked = locked;
     }
-    public Inventory getContainerInventory(){
+
+    public Inventory getContainerInventory() {
         return this.containerInventory;
     }
 
-    public boolean isLocked(){ //Returns if container is locked or not
+    public boolean isLocked() { //Returns if container is locked or not
         return locked;
     }
 

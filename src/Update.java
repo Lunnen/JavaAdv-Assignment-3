@@ -1,9 +1,3 @@
-/*
-Update Ska implementera Runnable och starta en tråd
-som Regelbundet updaterar Guit utifrån vad som händer i spelet
- */
-
-import java.io.Serializable;
 import java.util.List;
 
 public class Update implements Runnable {

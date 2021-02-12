@@ -1,4 +1,3 @@
-import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
@@ -29,6 +28,13 @@ public class UpdateNpc implements Runnable {
         boolean npcHasStuff = npcs.get(chosenNPC).getNpcInventory() != null;
         boolean floorHasStuff = basementRooms.get(currentNpcPosition).getRoomInventory() != null;
         GameObject wantedObject;
+
+        /*
+        NPC Talking - sometimes */
+        int ifNpcTalk = random.nextInt(5);
+        if(ifNpcTalk == 0 && player.getCurrentPlayerRoom() == npcs.get(chosenNPC).getPosition()){
+            gui.setConsoleLog(npcs.get(chosenNPC).getName() + " says: " + returnQuote(npcs.get(chosenNPC).getName()));
+        }
 
         boolean shouldNpcAct = random.nextBoolean();
         if (shouldNpcAct) { // 50-50 that he's going to do something.
@@ -77,8 +83,6 @@ public class UpdateNpc implements Runnable {
                 System.out.println("NPC > GUI UPDATED");
             }
         }
-        // **************************************************************************
-
     }
 
     public void changeRoom(int currentNpcPosition) {
@@ -119,7 +123,26 @@ public class UpdateNpc implements Runnable {
 
             System.out.println("Npc nr " + chosenNPC + "Drop looping" + wantedObject + "pos" + currentNpcPosition);
         }
-    }
 
+    }
+    public String returnQuote(String chosenNpcName){
+
+        String[] tureQuotes = { "Ständigt denna Vessla", "Använd bara pitolerna i nödfall", "Ett intressant fall på det hela taget"};
+        String[] jasonQuotes = { "Doomed... You're all doomed.", "Jason?", ".... [Muttering] ...", };
+        String[] freddyQuotes = { "Wanna Suck Face?", "What A Rush!", "How Sweet, Fresh Meat!", "I'll Get You My Pretty, And Your Little Soul Too!", "Every Town Has An Elm Street!" };
+
+        switch(chosenNpcName){
+            case "Jason Voorhees" -> {
+                return jasonQuotes[random.nextInt(jasonQuotes.length)];
+            }
+            case "Freddy Krueger" -> {
+                return freddyQuotes[random.nextInt(freddyQuotes.length)];
+            }
+            case "Ture Sventon" -> {
+                return tureQuotes[random.nextInt(tureQuotes.length)];
+            }
+        }
+        return "";
+    }
 
 }

@@ -1,21 +1,5 @@
-/*
-Inventory Ska innehålla en array av GameObjects.
 
-Arrayen vara anpassad efter det maxantal objekt som det kan bära (Npc bör bara
-kunna bära ett GameObjekt åt gången medan spelaren kan bära lite
-fler och rummen kan innehåla rätt många innan de blir “fulla”.
-
-Givetvis säger programmet ifrån om man försöker placera fler saker än
-det finns plats för.
-
-Här ska mekaniken för att plocka upp, byta bort
-och lägga ned objekt hanteras. ALL HANTERING AV ARRAYERNA
-
-
-SKA SKE MED STREAMS - det är alltså INTE tillåtet att använda
-ArrayLists/LinkedLists eller andra (smartare) lösningar!
- */
-
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -24,9 +8,12 @@ import java.util.stream.IntStream;
 
 public class Inventory implements Serializable {
 
-    protected GameObject[] objectList;
-    protected int invSize;
-    protected Gui gui;
+    @Serial
+    private static final long serialVersionUID = -4850508543017840034L;
+
+    GameObject[] objectList;
+    int invSize;
+    Gui gui;
 
     public Inventory(int invSize) {
         this.invSize = invSize;
@@ -35,9 +22,10 @@ public class Inventory implements Serializable {
 
     public void addObject(GameObject inputGameObject) {
 
-        if (findIndexOf(null) == -1) { //Find index of first null
+        //Find index of first null, and if inventory is full, end method
+        if (findIndexOf(null) == -1) {
             gui.setConsoleLog("Inventory is full");
-            return; //if inventory is full, end method
+            return;
         }
         this.objectList[findIndexOf(null)] = inputGameObject; //Put inputGameObject into first null value
     }
@@ -56,14 +44,8 @@ public class Inventory implements Serializable {
             }
         }
     }
-
-    public GameObject getObject(GameObject getThisObject) { // first object of this kind in objectList
-
-       return Arrays.stream(this.objectList).filter(x -> x.equals(getThisObject))
-                .findFirst().orElse(null);
-    }
-
-    public GameObject getFirstObject() { // get first object or return null -> Used for NPC trading.
+    /* Get first object or return null -> Used for NPC trading. */
+    public GameObject getFirstObject() {
 
         return Arrays.stream(this.objectList)
                 .filter(Objects::nonNull).findFirst().orElse(null);
@@ -89,10 +71,8 @@ public class Inventory implements Serializable {
         return result.length() > 0 ? result : "Empty!"; //If there's anything in inventory, show it - if not show "Empty".
     }
 
-    /*
-    Return first index where object/null exist, else -1 (inventory is full)
-     */
-    public int findIndexOf(GameObject objectToMatch) { //Finds first index, so no dupes <--
+    /* Return first index where object/null exist, else -1 (inventory is full). Finds first index, so no dupes <-- */
+    public int findIndexOf(GameObject objectToMatch) {
         return IntStream.range(0, objectList.length)
                 .filter(i -> objectList[i] == objectToMatch).findFirst().orElse(-1);
     }

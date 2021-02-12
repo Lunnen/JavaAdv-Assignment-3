@@ -1,13 +1,8 @@
 import java.io.Serial;
 import java.io.Serializable;
 
-/*
-• Npc Ska vara antingen ett Interface eller en Abstrakt klass och ge
-ramarna för våra Npc:er. I grundstrukturen är det en abstract men
-det är okej att byta. Tänk bara på att byta extends mot implements i
-subklasserna.
- */
 public abstract class Npc implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 5343006344882116183L;
 
@@ -24,6 +19,10 @@ public abstract class Npc implements Serializable {
 
     public void setNpcInventory(Inventory npcInventory) {
         this.npcInventory = npcInventory;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String toString() { return this.name + " with inventory: " + npcInventory; }

@@ -1,22 +1,27 @@
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Save implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -8665541935073115276L;
 
-    Player player = new Player(0); //Player starts at first room (zero).
-    List<Room> basementRooms = new ArrayList<>();
-    List<Person> npcs = new ArrayList<>();
+    Player player;
+    ArrayList<Room> basementRooms;
+    ArrayList<Person> npcs;
+    ArrayList<GameObject> items;
 
-    public Save(Player player, List<Room> basementRooms, List<Person> npcs) {
+    public Save(Player player, ArrayList<Room> basementRooms, ArrayList<Person> npcs, ArrayList<GameObject> items) {
         this.player = player;
         this.basementRooms = basementRooms;
         this.npcs = npcs;
+        this.items = items;
     }
+
+    public ArrayList<GameObject> getItems() { return items; }
+
+    public void setItems(ArrayList<GameObject> items) { this.items = items;}
 
     public Player getPlayer() {
         return player;
@@ -26,19 +31,19 @@ public class Save implements Serializable {
         this.player = player;
     }
 
-    public List<Room> getBasementRooms() {
+    public ArrayList<Room> getBasementRooms() {
         return basementRooms;
     }
 
-    public void setBasementRooms(List<Room> basementRooms) {
+    public void setBasementRooms(ArrayList<Room> basementRooms) {
         this.basementRooms = basementRooms;
     }
 
-    public List<Person> getNpcs() {
+    public ArrayList<Person> getNpcs() {
         return npcs;
     }
 
-    public void setNpcs(List<Person> npcs) {
+    public void setNpcs(ArrayList<Person> npcs) {
         this.npcs = npcs;
     }
 }

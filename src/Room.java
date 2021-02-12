@@ -5,13 +5,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/*
-Room Ett Room ska ha ett unikt namn,
-ett Inventory och sen showMetod() som beskriver det för spelaren.
- */
 public class Room implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 181368449519616788L;
+
     protected String roomName;
     protected String roomDescription;
     protected Inventory roomInventory;
@@ -24,22 +22,22 @@ public class Room implements Serializable {
         this.roomDescription = roomDescription;
         this.roomInventory = new Inventory(10); //Every room can handle invSize of 10.
     }
-
+    // Add person to first null value, unless room is full.
     public void addNpc(Person inputPerson) {
-        if (findIndexOf(null) == -1) { //  When room is full.
+        if (findIndexOf(null) == -1) {
             gui.setConsoleLog("Room is full of people!");
         } else {
-            personList[findIndexOf(null)] = inputPerson; //Add person to first null value
+            personList[findIndexOf(null)] = inputPerson;
         }
     }
 
     public void removeNPC(Person removePerson) {
 
         int firstIndexFound = findIndexOf(removePerson);
-
+        // Where right index was found, make this value null.
         this.personList = IntStream.range(0, this.personList.length)
                 .peek(i -> {
-                    if(i == firstIndexFound){ // Where right index was found, make this value null. (If you just remove it, it will decrease the amount of slots in inventory and crash.)
+                    if(i == firstIndexFound){
                         this.personList[i] = null;
                     }
                 }).mapToObj(i -> this.personList[i]).toArray(Person[]::new);
@@ -59,7 +57,8 @@ public class Room implements Serializable {
                 .filter(x -> x.equals(getThisPerson)).findFirst().orElse(null);
     }
 
-    public String getPersons() { // Return each person as a new line
+    // Return each person as a new line
+    public String getPersons() {
         return Arrays.stream(this.personList)
                 .filter(Objects::nonNull).map(Objects::toString).collect(Collectors.joining("\n"));
     }
@@ -105,8 +104,8 @@ public class Room implements Serializable {
         return "You're in the " + roomName + "\n" + roomDescription + "\n\nRoom inventory is:\n" + roomInventory;
     }
 
-    //Return first index where object/null exist, else -1 (inventory is full)
-    public int findIndexOf(Person personToMatch) { //Finds first index, so no dupes <--
+    //Return first index where object/null exist, else -1 (inventory is full). Finds first index, so no dupes <--
+    public int findIndexOf(Person personToMatch) {
         return IntStream.range(0, personList.length)
                 .filter(i -> personList[i] == personToMatch).findFirst().orElse(-1);
     }
