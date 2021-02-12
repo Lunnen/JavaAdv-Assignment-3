@@ -11,13 +11,19 @@ public class Save implements Serializable {
     ArrayList<Room> basementRooms;
     ArrayList<Person> npcs;
     ArrayList<GameObject> items;
+    Container box;
 
-    public Save(Player player, ArrayList<Room> basementRooms, ArrayList<Person> npcs, ArrayList<GameObject> items) {
+    public Save(Player player, ArrayList<Room> basementRooms, ArrayList<Person> npcs, ArrayList<GameObject> items, Container box) {
         this.player = player;
         this.basementRooms = basementRooms;
         this.npcs = npcs;
         this.items = items;
+        this.box = box;
     }
+
+    public Container getBox() { return box;}
+
+    public void setBox(Container box) { this.box = box; }
 
     public ArrayList<GameObject> getItems() { return items; }
 

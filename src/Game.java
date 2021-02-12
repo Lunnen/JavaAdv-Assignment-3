@@ -13,9 +13,9 @@ public class Game {
     ArrayList<Room> basementRooms = new ArrayList<>();
     ArrayList<Person> npcs = new ArrayList<>();
     ArrayList<GameObject> items = new ArrayList<>();
+    Container box = new Container("The Chest", 55, false, false);
 
-    protected Save save = new Save(player, basementRooms, npcs, items);
-    protected Container box = new Container("The Chest", 55, false, false);
+    Save save = new Save(player, basementRooms, npcs, items, box);
 
     public Game() {
         this.gui = new Gui(this);
@@ -136,38 +136,24 @@ public class Game {
                 break;
             // ******************************************
             case "Grab from floor":
-                System.out.println("Gonna grab me some -> " + inputObjectName + chosenItem);
-                System.out.println("player: " + player.getPlayerInventory());
-                System.out.println("roomInv " + basementRooms.get(player.currentPlayerRoom).getRoomInventory());
-
                 basementRooms.get(player.currentPlayerRoom).getRoomInventory().moveObject(player.getPlayerInventory(), chosenItem);
                 break;
             // ******************************************
             case "Drop to floor":
-                System.out.println("Dropping stuff... -> " + inputObjectName);
-                System.out.println("player: " + player.getPlayerInventory());
-                System.out.println("roomInv " + basementRooms.get(player.currentPlayerRoom).getRoomInventory());
-
                 player.getPlayerInventory().moveObject(basementRooms.get(player.currentPlayerRoom).getRoomInventory(), chosenItem);
 
                 break;
             // ******************************************
             case "Open door/chest":
-                System.out.println("open with -> " + inputObjectName);
-
                 switch (player.getCurrentPlayerRoom()) {
                     case 0 -> {
 
                         if (player.getPlayerInventory().checkExists(items.get(1))) { //If it's a normal key
-                            Key key = (Key) chosenItem;
-                            if (key.keyFits(box)) { // If it's the correct key, open chest.
                                 gui.setConsoleLog("Chest has been opened. Loot transferred to player inventory.");
 
                                 box.getContainerInventory().moveObject(player.getPlayerInventory(), items.get(0)); //Move Victory key from chest to player.inv.
                                 player.getPlayerInventory().removeObject(items.get(1)); //Remove key from player.inv.
                                 basementRooms.get(player.currentPlayerRoom).getRoomInventory().removeObject(box); //Remove box from room.
-
-                            }
                         } else if (player.getPlayerInventory().checkExists(items.get(0))) { //If its victory key
                             gui.setConsoleLog("That's not the correct key");
                         } else {
@@ -204,7 +190,6 @@ public class Game {
             objectOutputStream.writeObject(save);
             objectOutputStream.close();
 
-            System.out.println("SAVED object");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -222,7 +207,6 @@ public class Game {
         //Restoring all needed values from the Save class
         player.setCurrentPlayerRoom(save.getPlayer().getCurrentPlayerRoom());
         player.setPlayerInventory(save.getPlayer().getPlayerInventory());
-        System.out.println("this is set: " + player.getPlayerInventory());
 
         for (int i = 0; i < basementRooms.size(); i++) {
             basementRooms.get(i).setRoomInventory(save.getBasementRooms().get(i).getRoomInventory());
@@ -235,5 +219,6 @@ public class Game {
         this.items = new ArrayList<>();
         items = save.getItems();
 
+        this.box = save.getBox();
     }
 }
