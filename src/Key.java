@@ -7,15 +7,14 @@ av container den passar till eller tvärtom!
 
  */
 public class Key extends GameObject {
-    Container container;
+    Container inputContainer;
 
     public Key(String objectName, int id, boolean canPickUp, Container inputContainer) {
         super(objectName, id, canPickUp);
-        this.container = inputContainer;
+        this.inputContainer = inputContainer;
     }
     public boolean keyFits(Container compareContainer){
-        return compareContainer.equals(this.container);
-        //if( this.container.getName().equals(compareContainer).getName()){ true else false.
+        return this.inputContainer.getId() == id;
     }
 
     public String toString() {

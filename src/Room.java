@@ -1,3 +1,4 @@
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -9,6 +10,8 @@ Room Ett Room ska ha ett unikt namn,
 ett Inventory och sen showMetod() som beskriver det för spelaren.
  */
 public class Room implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 181368449519616788L;
     protected String roomName;
     protected String roomDescription;
     protected Inventory roomInventory;
@@ -83,6 +86,18 @@ public class Room implements Serializable {
 
     public Inventory getRoomInventory() {
         return roomInventory;
+    }
+
+    public void setRoomInventory(Inventory roomInventory) {
+        this.roomInventory = roomInventory;
+    }
+
+    public void setPersonList(Person[] personList) {
+        this.personList = personList;
+    }
+
+    public Person[] getPersonList() {
+        return personList;
     }
 
     @Override

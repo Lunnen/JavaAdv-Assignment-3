@@ -19,6 +19,10 @@ public class Player implements Serializable {
         return this.playerInventory;
     }
 
+    public void setPlayerInventory(Inventory playerInventory) {
+        this.playerInventory = playerInventory;
+    }
+
     public int getCurrentPlayerRoom() {
         return currentPlayerRoom;
     }

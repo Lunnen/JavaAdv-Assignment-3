@@ -17,8 +17,8 @@ public class Gui extends JFrame implements Serializable {
     private JPanel roomPanel;
     private JPanel invInfoPanel;
     private JPanel buttonPanel;
-    private JPanel tradePanel;
-    private JPanel tradeButtons;
+    private JPanel actionItem;
+    private JPanel actionButtons;
 
     private JTextArea showRoom;
     private JTextArea showPersons;
@@ -80,18 +80,18 @@ public class Gui extends JFrame implements Serializable {
         this.buttonPanel.add(buttonSave);
         this.buttonPanel.add(buttonLoad);
 
-        this.tradePanel.add(tradeInput);
-        this.tradeButtons.add(button3);
-        this.tradeButtons.add(button4);
-        this.tradeButtons.add(button5);
-        this.tradeButtons.add(button6);
+        this.actionItem.add(tradeInput);
+        this.actionButtons.add(button3);
+        this.actionButtons.add(button4);
+        this.actionButtons.add(button5);
+        this.actionButtons.add(button6);
 
         //Set order of panels
         this.panel.add(this.roomPanel);
         this.panel.add(this.invInfoPanel);
         this.panel.add(this.buttonPanel);
-        this.panel.add(this.tradePanel);
-        this.panel.add(this.tradeButtons);
+        this.panel.add(this.actionItem);
+        this.panel.add(this.actionButtons);
     }
 
     private void setUpElements() {
@@ -108,11 +108,11 @@ public class Gui extends JFrame implements Serializable {
         this.buttonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         this.buttonPanel.setBounds(5, 195, 875, 80);
 
-        this.tradePanel = new JPanel(new GridLayout(1, 1));
-        this.tradePanel.setBounds(255, 280, 400, 40);
+        this.actionItem = new JPanel(new GridLayout(1, 1));
+        this.actionItem.setBounds(255, 280, 400, 40);
 
-        this.tradeButtons = new JPanel(new GridLayout(1, 4, 5, 5));
-        this.tradeButtons.setBounds(5, 325, 875, 40);
+        this.actionButtons = new JPanel(new GridLayout(1, 4, 5, 5));
+        this.actionButtons.setBounds(5, 325, 875, 40);
 
         // Variable Settings
         this.showRoom = new JTextArea("");
@@ -129,7 +129,7 @@ public class Gui extends JFrame implements Serializable {
         this.infoConsole.setForeground(Color.red); //Important info the player needs to be visible
 
         this.tradeInput = new JTextField("");
-        this.tradeInput.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Name of item to Trade/Drop/Pickup/Open door with: "));
+        this.tradeInput.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED), "Name of item to interact with: "));
 
         this.showPersons.setEditable(false);
         this.showRoom.setEditable(false);
@@ -144,7 +144,7 @@ public class Gui extends JFrame implements Serializable {
                 case "Enter next room" -> game.goForward();
                 case "Go back a room" -> game.goBack();
                 case "Save Game" -> game.save();
-                //case "Load Game" -> game = game.load(); <--- Disabled
+                case "Load Game" -> game.load();
             }
 
         };
@@ -154,7 +154,7 @@ public class Gui extends JFrame implements Serializable {
         buttonBack.addActionListener(inputListenerChangeRoom);
         this.buttonSave = new JButton("Save Game");
         buttonSave.addActionListener(inputListenerChangeRoom);
-        this.buttonLoad = new JButton("Load Game (Disabled)");
+        this.buttonLoad = new JButton("Load Game");
         buttonLoad.addActionListener(inputListenerChangeRoom);
         // ************************************************************************
         this.button3 = new JButton("Trade with NPC");
@@ -170,7 +170,7 @@ public class Gui extends JFrame implements Serializable {
         this.button5 = new JButton("Drop to floor");
         button5.addActionListener(inputListenerObject);
 
-        this.button6 = new JButton("Open door");
+        this.button6 = new JButton("Open door/chest");
         button6.addActionListener(inputListenerObject);
         // ************************************************************************
 

@@ -3,19 +3,18 @@ Update Ska implementera Runnable och starta en tråd
 som Regelbundet updaterar Guit utifrån vad som händer i spelet
  */
 
+import java.io.Serializable;
 import java.util.List;
 
 public class Update implements Runnable {
     Gui gui;
     List<Room> basementRooms;
     Player player;
-    Inventory inventory;
 
-    public Update(Gui gui, List<Room> basement, Player player, Inventory playerInventory) {
+    public Update(Gui gui, List<Room> basement, Player player) {
         this.gui = gui;
         this.basementRooms = basement;
         this.player = player;
-        this.inventory = playerInventory;
     }
 
     public void run() {
@@ -31,6 +30,6 @@ public class Update implements Runnable {
         boolean ifPersonsInRoom = basementRooms.get(currentRoom).getPersons().length() > 0;
         gui.setNPC(ifPersonsInRoom ? basementRooms.get(currentRoom).getPersons() : "There's no one in the room");
 
-        gui.setShowInventory(inventory.toString());
+        gui.setShowInventory(player.getPlayerInventory().toString());
     }
 }

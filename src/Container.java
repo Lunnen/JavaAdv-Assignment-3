@@ -19,4 +19,8 @@ public class Container extends GameObject {
     public boolean isLocked(){ //Returns if container is locked or not
         return locked;
     }
+
+    public String toString() {
+        return objectName;
+    }
 }
